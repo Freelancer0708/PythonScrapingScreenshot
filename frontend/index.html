@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サイトスクレイピングツール</title>
+</head>
+<body>
+    <h2>URLを入力してスクリーンショット & HTMLを取得</h2>
+    <input type="text" id="url" placeholder="https://example.com">
+    <button onclick="fetchData()">取得</button>
+
+    <h3>スクリーンショット</h3>
+    <img id="screenshot" src="" width="600" style="border: 1px solid #ccc; display: none;">
+
+    <h3>HTML構造</h3>
+    <pre id="html" style="white-space: pre-wrap; word-wrap: break-word;"></pre>
+
+    <script>
+        async function fetchData() {
+            const url = document.getElementById("url").value;
+            if (!url) {
+                alert("URLを入力してください！");
+                return;
+            }
+
+            const username = prompt("ユーザー名:");
+            const password = prompt("パスワード:");
+            const credentials = btoa(`${username}:${password}`);
+
+            const response = await fetch(`http://localhost:8000/capture/?url=${encodeURIComponent(url)}`, {
+                headers: {
+                    "Authorization": `Basic ${credentials}`
+                }
+            });
+
+            if (response.status === 401) {
+                alert("認証に失敗しました。");
+                return;
+            }
+
+            const data = await response.json();
+            document.getElementById("screenshot").src = data.screenshot;
+            document.getElementById("screenshot").style.display = "block";
+            document.getElementById("html").textContent = data.html;
+        }
+    </script>
+</body>
+</html>
