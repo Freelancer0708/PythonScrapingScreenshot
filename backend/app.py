@@ -57,3 +57,8 @@ os.makedirs(SCREENSHOT_FOLDER, exist_ok=True)
 
 # スクリーンショットの静的ファイルサーバー
 app.mount("/screenshots", StaticFiles(directory=SCREENSHOT_FOLDER), name="screenshots")
+
+# ✅ **新しく `/` エンドポイントを追加**
+@app.get("/")
+def read_root():
+    return {"message": "FastAPI Screenshot App is running!"}
